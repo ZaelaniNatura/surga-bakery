@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Surga Bakery is a small, family run bakery in Melbourne baking naturally leavened sourdough, pastries and cakes fresh every morning.">
+<meta name="theme-color" content="#0a0a0a">
+<title>Surga Bakery — Melbourne, Australia</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://unpkg.com/lucide@latest"></script>
+
+<style>
+  :root{
+    --ease: cubic-bezier(0.16, 1, 0.3, 1);
+    --nav-h: 84px;
+  }
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    font-family:'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    background:#ffffff;
+    color:#0a0a0a;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* kill every shadow on the page, no exceptions */
+  *{ box-shadow:none !important; }
+
+  a{ -webkit-tap-highlight-color:transparent; }
+  a:focus-visible, button:focus-visible{
+    outline:2px solid #0a0a0a;
+    outline-offset:3px;
+    border-radius:999px;
+  }
+
+  /* ---------- HERO (nav + hero combined) ---------- */
+  /* canvas photo: bakery.png, sitting next to this file. fixed ratio per spec:
+     4:3 on mobile, 16:9 from tablet/desktop up. */
+  .hero-wrap{
+    position:relative;
+    width:100%;
+    aspect-ratio: 4 / 3;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+    background:#0a0a0a; /* shows if bakery.png hasn't loaded yet */
+  }
+  @media (min-width:761px){
+    .hero-wrap{ aspect-ratio: 16 / 9; }
+  }
+  /* the photo itself, isolated so grayscale only affects the image, never the
+     nav/text sitting above it */
+  .hero-photo{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    background-image:url('bakery.png');
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    filter:grayscale(1);
+  }
+  /* darkening + top fade so white nav and heading stay legible over any photo */
+  .hero-overlay{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    background:
+      linear-gradient(180deg, rgba(0,0,0,0.6) 0%, transparent 40%, rgba(0,0,0,0.55) 100%);
+    pointer-events:none;
+  }
+
+  nav.center-nav{
+    background:rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.12);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+  }
+  nav.center-nav a{ color:rgba(255,255,255,0.75); transition:color .2s var(--ease); }
+  nav.center-nav a:hover, nav.center-nav a:focus-visible{ color:#ffffff; }
+
+  .find-us-link{ color:rgba(255,255,255,0.85); transition:opacity .2s var(--ease); }
+  .find-us-link:hover{ opacity:0.7; }
+
+  .order-btn{
+    background:#ffffff;
+    color:#0a0a0a;
+    transition:transform .2s var(--ease), background .2s var(--ease);
+  }
+  .order-btn:hover, .order-btn:focus-visible{ transform:translateY(-2px); background:#f2f2f2; }
+
+  .menu-toggle{
+    background:rgba(255,255,255,0.08);
+    border:1px solid rgba(255,255,255,0.22);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    color:#ffffff;
+    transition:background .2s var(--ease);
+  }
+  .menu-toggle:hover, .menu-toggle:focus-visible{ background:rgba(255,255,255,0.16); }
+  .menu-toggle .icon-x{ display:none; }
+  .menu-toggle.active .icon-menu{ display:none; }
+  .menu-toggle.active .icon-x{ display:block; }
+
+  .mobile-nav{
+    display:none;
+    background:rgba(10,10,10,0.85);
+    border:1px solid rgba(255,255,255,0.14);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+  }
+  .mobile-nav.open{ display:flex; }
+  .mobile-nav a{ color:#fff; border-bottom:1px solid rgba(255,255,255,0.1); }
+  .mobile-nav a:last-child{ border-bottom:none; }
+  .mobile-nav a:hover{ background:rgba(255,255,255,0.06); }
+
+  /* the one signature moment: a light glass sheen on the heading text itself,
+     no panel or box behind it, just the letterforms picking up a frosted look */
+  .hero h1{
+    letter-spacing:-0.02em;
+    background:linear-gradient(180deg, rgba(255,255,255,0.98) 0%, rgba(255,255,255,0.7) 100%);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    -webkit-text-stroke:0.4px rgba(255,255,255,0.3);
+    text-shadow:0 10px 34px rgba(255,255,255,0.14);
+    opacity:0;
+    animation:fadeUp .8s var(--ease) 0.05s forwards;
+  }
+  .hero p{
+    color:rgba(255,255,255,0.68);
+    opacity:0;
+    animation:fadeUp .8s var(--ease) 0.2s forwards;
+  }
+  .cta-pill{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.25);
+    backdrop-filter:blur(10px);
+    -webkit-backdrop-filter:blur(10px);
+    color:#ffffff;
+    opacity:0;
+    animation:fadeUp .8s var(--ease) 0.35s forwards;
+    transition:background .2s var(--ease), border-color .2s var(--ease), transform .2s var(--ease);
+  }
+  .cta-pill:hover, .cta-pill:focus-visible{
+    background:rgba(255,255,255,0.14);
+    border-color:rgba(255,255,255,0.4);
+    transform:translateY(-2px);
+  }
+  .cta-pill .arrow{
+    background:#ffffff; color:#0a0a0a;
+    display:flex; align-items:center; justify-content:center;
+    transition:transform .25s var(--ease);
+  }
+  .cta-pill:hover .arrow{ transform:translateX(3px); }
+
+  @keyframes fadeUp{
+    from{ opacity:0; transform:translateY(18px); }
+    to{ opacity:1; transform:translateY(0); }
+  }
+  @media (prefers-reduced-motion:reduce){
+    *{ animation-duration:.001ms !important; transition-duration:.001ms !important; }
+    .hero h1,.hero p,.cta-pill{ opacity:1; }
+  }
+
+  /* ---------- shared section styling ---------- */
+  .card{
+    border:1px solid #e7e5e2;
+    border-radius:24px;
+    background:#ffffff;
+  }
+  .placeholder-img{
+    background:
+      repeating-linear-gradient(135deg, #f4f3f1, #f4f3f1 10px, #ececea 10px, #ececea 20px);
+    border:1px solid #e7e5e2;
+  }
+  .eyebrow{
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    font-size:12px;
+    font-weight:600;
+    color:#8a8a86;
+  }
+
+  @media (max-width:760px){
+    :root{ --nav-h:56px; }
+    nav.center-nav{ display:none; }
+    .find-us-link{ display:none; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ============ HERO + NAV (combined, per source layout) ============ -->
+  <!-- fixed canvas: 4:3 on mobile, 16:9 from tablet up. drop bakery.png next to this
+       file to fill the photo layer below; it renders in grayscale to stay on-theme. -->
+  <section class="hero-wrap">
+    <div class="hero-photo"></div>
+    <div class="hero-overlay"></div>
+
+    <header class="relative z-20 flex items-center justify-between px-5 md:px-10 py-4 md:py-7 shrink-0" style="min-height:var(--nav-h)">
+      <div class="text-white text-[14px] md:text-[15px] font-semibold tracking-tight">Surga Bakery</div>
+
+      <nav class="center-nav hidden md:flex absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 items-center gap-9 px-8 py-3 rounded-full" aria-label="Primary">
+        <a href="#story" class="text-sm font-medium">Our Story</a>
+        <a href="#menu" class="text-sm font-medium">Menu</a>
+        <a href="#fresh" class="text-sm font-medium">Fresh Bakes</a>
+        <a href="#visit" class="text-sm font-medium">Visit Us</a>
+      </nav>
+
+      <div class="flex items-center gap-5">
+        <a href="#visit" class="find-us-link hidden md:inline text-sm font-medium">Find us</a>
+        <a href="#menu" class="order-btn hidden md:inline-flex items-center rounded-full text-sm font-semibold px-5 py-2.5">Order online</a>
+        <button class="menu-toggle flex md:hidden items-center justify-center w-9 h-9 rounded-full" id="menuToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNav">
+          <i data-lucide="menu" class="icon-menu" style="width:17px;height:17px;"></i>
+          <i data-lucide="x" class="icon-x" style="width:17px;height:17px;"></i>
+        </button>
+      </div>
+    </header>
+
+    <nav class="mobile-nav absolute left-3 right-3 z-[15] flex-col rounded-[16px] overflow-hidden" id="mobileNav" aria-label="Mobile" style="top:calc(var(--nav-h) - 4px)">
+      <a href="#story" class="text-sm font-medium px-5 py-3.5">Our Story</a>
+      <a href="#menu" class="text-sm font-medium px-5 py-3.5">Menu</a>
+      <a href="#fresh" class="text-sm font-medium px-5 py-3.5">Fresh Bakes</a>
+      <a href="#visit" class="text-sm font-medium px-5 py-3.5">Visit Us</a>
+      <a href="#menu" class="text-sm font-medium px-5 py-3.5">Order online</a>
+    </nav>
+
+    <main class="hero relative z-[5] flex-1 flex flex-col items-center justify-center text-center px-5 py-4 md:py-10">
+      <h1 class="font-extrabold leading-[1.12]" style="font-size:clamp(28px, 6vw, 78px);">
+        Bread the way<br>it used to be made
+      </h1>
+      <p class="mt-3 md:mt-7 text-[13px] md:text-[15px] leading-relaxed max-w-[280px] md:max-w-md">
+        Every loaf starts with a wild yeast starter and rests for a full day before it ever sees the oven. No shortcuts, no additives, just flour, water and salt.
+      </p>
+      <a href="#menu" class="cta-pill mt-4 md:mt-9 inline-flex items-center gap-2 md:gap-3 text-[13px] md:text-sm font-medium rounded-full pl-4 md:pl-6 pr-1.5 md:pr-2 py-1.5 md:py-2">
+        See today's menu
+        <span class="arrow rounded-full w-[26px] h-[26px] md:w-8 md:h-8"><i data-lucide="arrow-right" style="width:13px;height:13px;" class="md:!w-[15px] md:!h-[15px]"></i></span>
+      </a>
+    </main>
+  </section>
+
+  <!-- ============ OUR STORY ============ -->
+  <section id="story" class="px-6 md:px-10 py-20 md:py-28 max-w-6xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+      <div class="placeholder-img rounded-[28px] aspect-[4/5] flex items-center justify-center order-2 md:order-1">
+        <span class="text-xs font-medium text-[#8a8a86]">Photo placeholder — bakers at work</span>
+      </div>
+      <div class="order-1 md:order-2">
+        <p class="eyebrow mb-4">Our Story</p>
+        <h2 class="font-extrabold tracking-tight" style="font-size:clamp(28px,4vw,42px); line-height:1.15;">
+          Small batch, slow and steady
+        </h2>
+        <p class="mt-6 text-[15px] leading-relaxed text-[#4b4b48]">
+          Surga Bakery started as a stall at a Sunday market in Melbourne's inner north before it found a proper home behind its own front door. The way we bake hasn't changed much since. We mill and mix in small batches, shape every loaf by hand, and let a slow fermentation do most of the work. It takes longer, but it's the difference between bread that fills you up and bread that actually tastes like something.
+        </p>
+        <p class="mt-4 text-[15px] leading-relaxed text-[#4b4b48]">
+          We work with Australian growers for our flour and keep the ingredient list short on purpose. If it wouldn't be in your own kitchen, it's not in our dough.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHAT WE BAKE ============ -->
+  <section id="menu" class="px-6 md:px-10 py-20 md:py-28 max-w-6xl mx-auto">
+    <div class="max-w-xl mb-14">
+      <p class="eyebrow mb-4">What We Bake</p>
+      <h2 class="font-extrabold tracking-tight" style="font-size:clamp(28px,4vw,42px); line-height:1.15;">
+        A short menu, done properly
+      </h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="card overflow-hidden">
+        <div class="placeholder-img aspect-square flex items-center justify-center">
+          <span class="text-xs font-medium text-[#8a8a86] px-4 text-center">Photo placeholder</span>
+        </div>
+        <div class="p-6">
+          <h3 class="font-semibold text-[15px]">Sourdough Loaves</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[#6b6b67]">Naturally leavened, twenty four hour proof, baked fresh each morning.</p>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden">
+        <div class="placeholder-img aspect-square flex items-center justify-center">
+          <span class="text-xs font-medium text-[#8a8a86] px-4 text-center">Photo placeholder</span>
+        </div>
+        <div class="p-6">
+          <h3 class="font-semibold text-[15px]">Morning Pastries</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[#6b6b67]">Laminated by hand, from plain croissants to seasonal fillings.</p>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden">
+        <div class="placeholder-img aspect-square flex items-center justify-center">
+          <span class="text-xs font-medium text-[#8a8a86] px-4 text-center">Photo placeholder</span>
+        </div>
+        <div class="p-6">
+          <h3 class="font-semibold text-[15px]">Cakes &amp; Slices</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[#6b6b67]">Simple, honest bakes made for sharing over coffee.</p>
+        </div>
+      </div>
+
+      <div class="card overflow-hidden">
+        <div class="placeholder-img aspect-square flex items-center justify-center">
+          <span class="text-xs font-medium text-[#8a8a86] px-4 text-center">Photo placeholder</span>
+        </div>
+        <div class="p-6">
+          <h3 class="font-semibold text-[15px]">Coffee &amp; Extras</h3>
+          <p class="mt-2 text-sm leading-relaxed text-[#6b6b67]">Locally roasted beans to go with whatever's fresh out of the oven.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ WHY SURGA BAKERY ============ -->
+  <section id="fresh" class="px-6 md:px-10 py-20 md:py-28 max-w-6xl mx-auto">
+    <div class="max-w-xl mb-14">
+      <p class="eyebrow mb-4">Why Surga Bakery</p>
+      <h2 class="font-extrabold tracking-tight" style="font-size:clamp(28px,4vw,42px); line-height:1.15;">
+        Nothing rushed, nothing hidden
+      </h2>
+    </div>
+
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div class="card p-7">
+        <i data-lucide="sunrise" style="width:22px;height:22px;"></i>
+        <h3 class="mt-5 font-semibold text-[15px]">Baked fresh daily</h3>
+        <p class="mt-2 text-sm leading-relaxed text-[#6b6b67]">Nothing sits overnight. What's in the window went into the oven that morning.</p>
+      </div>
+      <div class="card p-7">
+        <i data-lucide="wheat" style="width:22px;height:22px;"></i>
+        <h3 class="mt-5 font-semibold text-[15px]">Locally milled flour</h3>
+        <p class="mt-2 text-sm leading-relaxed text-[#6b6b67]">Sourced from Australian growers to support local farmers.</p>
+      </div>
+      <div class="card p-7">
+        <i data-lucide="hourglass" style="width:22px;height:22px;"></i>
+        <h3 class="mt-5 font-semibold text-[15px]">Naturally leavened</h3>
+        <p class="mt-2 text-sm leading-relaxed text-[#6b6b67]">A wild yeast starter and a slow proof, no commercial yeast involved.</p>
+      </div>
+      <div class="card p-7">
+        <i data-lucide="leaf" style="width:22px;height:22px;"></i>
+        <h3 class="mt-5 font-semibold text-[15px]">No preservatives</h3>
+        <p class="mt-2 text-sm leading-relaxed text-[#6b6b67]">Short ingredient lists, nothing artificial, nothing you can't pronounce.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ VISIT US ============ -->
+  <section id="visit" class="px-6 md:px-10 py-20 md:py-28 max-w-6xl mx-auto">
+    <div class="grid md:grid-cols-2 gap-12 md:gap-16 items-center">
+      <div>
+        <p class="eyebrow mb-4">Visit Us</p>
+        <h2 class="font-extrabold tracking-tight" style="font-size:clamp(28px,4vw,42px); line-height:1.15;">
+          Come say g'day
+        </h2>
+        <p class="mt-6 text-[15px] leading-relaxed text-[#4b4b48]">
+          We're a small shopfront, so the good stuff tends to go quickly. Get in early on weekends if you're after something specific.
+        </p>
+
+        <div class="mt-8 space-y-5">
+          <div class="flex items-start gap-4">
+            <i data-lucide="map-pin" style="width:19px;height:19px;" class="mt-0.5 shrink-0"></i>
+            <p class="text-[15px] text-[#2b2b28]">14 Rose Street, Fitzroy, Melbourne VIC 3065, Australia</p>
+          </div>
+          <div class="flex items-start gap-4">
+            <i data-lucide="clock" style="width:19px;height:19px;" class="mt-0.5 shrink-0"></i>
+            <p class="text-[15px] text-[#2b2b28]">Tuesday to Saturday, 7am until sold out<br>Closed Sunday and Monday</p>
+          </div>
+          <div class="flex items-start gap-4">
+            <i data-lucide="phone" style="width:19px;height:19px;" class="mt-0.5 shrink-0"></i>
+            <p class="text-[15px] text-[#2b2b28]">(03) 9000 1234</p>
+          </div>
+        </div>
+
+        <a href="#" class="order-btn mt-9 inline-flex items-center gap-2 rounded-full text-sm font-semibold px-6 py-3" style="background:#0a0a0a;color:#ffffff;">
+          Get directions
+          <i data-lucide="arrow-right" style="width:15px;height:15px;"></i>
+        </a>
+      </div>
+
+      <div class="placeholder-img rounded-[28px] aspect-[4/5] flex items-center justify-center">
+        <span class="text-xs font-medium text-[#8a8a86]">Map placeholder</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ FOOTER ============ -->
+  <footer class="border-t border-[#e7e5e2] px-6 md:px-10 py-14">
+    <div class="max-w-6xl mx-auto flex flex-col md:flex-row md:items-center md:justify-between gap-8">
+      <div>
+        <div class="font-semibold text-[15px]">Surga Bakery</div>
+        <p class="mt-2 text-sm text-[#8a8a86] max-w-xs">Naturally leavened bread, baked fresh every morning in Melbourne.</p>
+      </div>
+
+      <nav class="flex flex-wrap gap-x-8 gap-y-3" aria-label="Footer">
+        <a href="#story" class="text-sm text-[#4b4b48] hover:text-black transition-colors">Our Story</a>
+        <a href="#menu" class="text-sm text-[#4b4b48] hover:text-black transition-colors">Menu</a>
+        <a href="#fresh" class="text-sm text-[#4b4b48] hover:text-black transition-colors">Fresh Bakes</a>
+        <a href="#visit" class="text-sm text-[#4b4b48] hover:text-black transition-colors">Visit Us</a>
+      </nav>
+
+      <div class="flex items-center gap-4">
+        <a href="#" aria-label="Instagram" class="w-9 h-9 rounded-full border border-[#e7e5e2] flex items-center justify-center hover:border-black transition-colors">
+          <i data-lucide="instagram" style="width:16px;height:16px;"></i>
+        </a>
+        <a href="#" aria-label="Facebook" class="w-9 h-9 rounded-full border border-[#e7e5e2] flex items-center justify-center hover:border-black transition-colors">
+          <i data-lucide="facebook" style="width:16px;height:16px;"></i>
+        </a>
+      </div>
+    </div>
+    <p class="max-w-6xl mx-auto mt-10 pt-8 border-t border-[#e7e5e2] text-xs text-[#8a8a86]">© 2026 Surga Bakery. Melbourne, Australia.</p>
+  </footer>
+
+  <script>
+    lucide.createIcons();
+
+    const menuToggle = document.getElementById('menuToggle');
+    const mobileNav = document.getElementById('mobileNav');
+
+    menuToggle.addEventListener('click', () => {
+      const isOpen = mobileNav.classList.toggle('open');
+      menuToggle.classList.toggle('active', isOpen);
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+    });
+
+    document.addEventListener('click', (e) => {
+      if (!mobileNav.contains(e.target) && !menuToggle.contains(e.target)) {
+        mobileNav.classList.remove('open');
+        menuToggle.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+  </script>
+
+</body>
+</html>
